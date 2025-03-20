@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{60192176-D04C-4A69-96B2-003DE19C2B06}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8173564E-2F4A-4925-953B-09858E1934FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rommanel.Domain", "src\Core\Domain\Rommanel.Domain.csproj", "{9746C91C-782A-42F9-9C3B-D570F7DCAFA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rommanel.Application", "src\Core\Application\Rommanel.Application.csproj", "{80CA8C2E-7499-460D-9D8B-610D41059D9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rommanel.Infrastructure", "src\Infrastructure\Rommanel.Infrastructure.csproj", "{0F0F2777-3D24-46BA-9715-929B956EFABF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rommanel.WebAPI", "src\WebAPI\Rommanel.WebAPI.csproj", "{5E0C23F4-544D-462D-A199-67815B83302D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9746C91C-782A-42F9-9C3B-D570F7DCAFA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9746C91C-782A-42F9-9C3B-D570F7DCAFA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9746C91C-782A-42F9-9C3B-D570F7DCAFA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9746C91C-782A-42F9-9C3B-D570F7DCAFA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80CA8C2E-7499-460D-9D8B-610D41059D9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80CA8C2E-7499-460D-9D8B-610D41059D9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80CA8C2E-7499-460D-9D8B-610D41059D9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80CA8C2E-7499-460D-9D8B-610D41059D9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F0F2777-3D24-46BA-9715-929B956EFABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0F2777-3D24-46BA-9715-929B956EFABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0F2777-3D24-46BA-9715-929B956EFABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0F2777-3D24-46BA-9715-929B956EFABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E0C23F4-544D-462D-A199-67815B83302D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E0C23F4-544D-462D-A199-67815B83302D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E0C23F4-544D-462D-A199-67815B83302D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E0C23F4-544D-462D-A199-67815B83302D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8173564E-2F4A-4925-953B-09858E1934FD} = {60192176-D04C-4A69-96B2-003DE19C2B06}
+		{9746C91C-782A-42F9-9C3B-D570F7DCAFA3} = {8173564E-2F4A-4925-953B-09858E1934FD}
+		{80CA8C2E-7499-460D-9D8B-610D41059D9E} = {8173564E-2F4A-4925-953B-09858E1934FD}
+		{0F0F2777-3D24-46BA-9715-929B956EFABF} = {60192176-D04C-4A69-96B2-003DE19C2B06}
+		{5E0C23F4-544D-462D-A199-67815B83302D} = {60192176-D04C-4A69-96B2-003DE19C2B06}
+	EndGlobalSection
+EndGlobal
