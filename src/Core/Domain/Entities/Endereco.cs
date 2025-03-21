@@ -8,5 +8,15 @@
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
+
+        public Endereco(string cep, string logradouro, string numero, string bairro, string cidade, string estado)
+        {
+            CEP = cep;
+            Logradouro = logradouro;
+            Numero = numero;
+            Bairro = bairro;
+            Cidade = cidade;
+            Estado = estado;
+        }
     }
 }
