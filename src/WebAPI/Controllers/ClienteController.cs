@@ -1,46 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Rommanel.Domain.Entities;
-using Rommanel.Domain.Repositories;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Rommanel.Application.Commands;
+using Rommanel.Application.Queries;
 
 namespace Rommanel.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClienteController : ControllerBase
+    public class ClienteController(IMediator mediator) : ControllerBase
     {
-        private readonly IClienteRepository _clienteRepository;
-
-        public ClienteController(IClienteRepository clienteRepository)
-        {
-            _clienteRepository = clienteRepository;
-        }
+        private readonly IMediator _mediator = mediator;
 
         [HttpPost]
-        public async Task<IActionResult> CriarCliente([FromBody] Cliente cliente)
+        public async Task<IActionResult> CriarCliente([FromBody] CreateClienteCommand command)
         {
-            await _clienteRepository.AddAsync(cliente);
-            return CreatedAtAction(nameof(ObterCliente), new { id = cliente.Id }, cliente);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var id = await _mediator.Send(command);
+            return CreatedAtAction(nameof(ObterCliente), new { id }, command);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterCliente(Guid id)
         {
-            var cliente = await _clienteRepository.GetByIdAsync(id);
-            return cliente == null ? NotFound() : Ok(cliente);
+            var query = new GetClienteByIdQuery(id);
+            var cliente = await _mediator.Send(query);
+
+            if (cliente == null)
+                return NotFound();
+
+            return Ok(cliente);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListarClientes([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var query = new GetClientesQuery(page, pageSize);
+            var clientes = await _mediator.Send(query);
+            return Ok(clientes);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> AtualizarCliente(Guid id, [FromBody] Cliente cliente)
+        public async Task<IActionResult> AtualizarCliente(Guid id, [FromBody] UpdateClienteCommand command)
         {
-            if (id != cliente.Id) return BadRequest();
-            await _clienteRepository.UpdateAsync(cliente);
+            if (id != command.Id)
+                return BadRequest("O ID informado na URL não corresponde ao do cliente.");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _mediator.Send(command);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverCliente(Guid id)
         {
-            await _clienteRepository.DeleteAsync(id);
+            var command = new DeleteClienteCommand(id);
+            await _mediator.Send(command);
             return NoContent();
         }
     }
