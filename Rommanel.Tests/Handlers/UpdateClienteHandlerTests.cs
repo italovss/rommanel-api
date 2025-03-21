@@ -1,5 +1,7 @@
-﻿using Moq;
+﻿using MediatR;
+using Moq;
 using Rommanel.Application.Commands;
+using Rommanel.Application.Events;
 using Rommanel.Application.Handlers;
 using Rommanel.Domain.Entities;
 using Rommanel.Domain.Repositories;
@@ -9,35 +11,38 @@ namespace Rommanel.Tests.Handlers
     public class UpdateClienteHandlerTests
     {
         [Fact]
-        public async Task Handle_DeveAtualizarCliente_ComDadosValidos()
+        public async Task Handle_DeveAtualizarClienteEPublicarEvento()
         {
             // Arrange
             var clienteId = Guid.NewGuid();
-            var clienteExistente = new Cliente("Ana Pereira", "45678912300", new DateTime(1992, 3, 15), "61977777777", "ana@email.com",
-                new Endereco("70345000", "Rua Z", "30", "Bairro Norte", "Brasília", "DF"));
+            var clienteAntigo = new Cliente("Antigo", "11111111111", new DateTime(1995, 1, 1), "6111111111", "antigo@email.com",
+                new Endereco("00000000", "Velha", "1", "Bairro", "Cidade", "DF"));
 
-            var clienteRepositoryMock = new Mock<IClienteRepository>();
-            clienteRepositoryMock.Setup(repo => repo.GetByIdAsync(clienteId)).ReturnsAsync(clienteExistente);
-            clienteRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<Cliente>())).Returns(Task.CompletedTask);
+            var mockRepo = new Mock<IClienteRepository>();
+            var mockMediator = new Mock<IMediator>();
 
-            var handler = new UpdateClienteHandler(clienteRepositoryMock.Object);
+            mockRepo.Setup(r => r.GetByIdAsync(clienteId)).ReturnsAsync(clienteAntigo);
+            mockRepo.Setup(r => r.UpdateAsync(It.IsAny<Cliente>())).Returns(Task.CompletedTask);
+
+            var handler = new UpdateClienteHandler(mockRepo.Object, mockMediator.Object);
 
             var command = new UpdateClienteCommand
             {
                 Id = clienteId,
-                Nome = "Ana Pereira Atualizada",
-                CPF_CNPJ = "45678912300",
-                DataNascimento = new DateTime(1992, 3, 15),
-                Telefone = "61977777777",
-                Email = "ana.nova@email.com",
-                Endereco = new Endereco("70345000", "Rua Z", "30", "Bairro Norte", "Brasília", "DF")
+                Nome = "Atualizado",
+                CPF_CNPJ = "22222222222",
+                DataNascimento = new DateTime(1990, 5, 10),
+                Telefone = "61999999999",
+                Email = "novo@email.com",
+                Endereco = new Endereco("70345000", "Rua Nova", "20", "Centro", "Brasília", "DF")
             };
 
             // Act
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            clienteRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<Cliente>()), Times.Once);
+            mockRepo.Verify(r => r.UpdateAsync(It.IsAny<Cliente>()), Times.Once);
+            mockMediator.Verify(m => m.Publish(It.IsAny<ClienteAtualizadoEvent>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
