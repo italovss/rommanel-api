@@ -2,64 +2,54 @@
 using Microsoft.AspNetCore.Mvc;
 using Rommanel.Application.Commands;
 using Rommanel.Application.Queries;
+using Rommanel.Domain.Entities;
+using Rommanel.WebAPI.Models.Response;
 
-namespace Rommanel.WebAPI.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class ClienteController(IMediator mediator) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ClienteController(IMediator mediator) : ControllerBase
+    private readonly IMediator _mediator = mediator;
+
+    [HttpPost]
+    public async Task<IActionResult> CriarCliente([FromBody] CreateClienteCommand command)
     {
-        private readonly IMediator _mediator = mediator;
+        var id = await _mediator.Send(command);
+        return CreatedAtAction(nameof(ObterCliente), new { id }, ApiResponse<Guid>.Ok(id, "Cliente criado com sucesso."));
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> CriarCliente([FromBody] CreateClienteCommand command)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+    [HttpGet("{id}")]
+    public async Task<IActionResult> ObterCliente(Guid id)
+    {
+        var cliente = await _mediator.Send(new GetClienteByIdQuery(id));
 
-            var id = await _mediator.Send(command);
-            return CreatedAtAction(nameof(ObterCliente), new { id }, command);
-        }
+        if (cliente == null)
+            return NotFound(ApiResponse<string>.Fail("Cliente não encontrado."));
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> ObterCliente(Guid id)
-        {
-            var query = new GetClienteByIdQuery(id);
-            var cliente = await _mediator.Send(query);
+        return Ok(ApiResponse<Cliente>.Ok(cliente));
+    }
 
-            if (cliente == null)
-                return NotFound();
+    [HttpGet]
+    public async Task<IActionResult> ListarClientes([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
+        var clientes = await _mediator.Send(new GetClientesQuery(page, pageSize));
+        return Ok(ApiResponse<IEnumerable<Cliente>>.Ok(clientes));
+    }
 
-            return Ok(cliente);
-        }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> AtualizarCliente(Guid id, [FromBody] UpdateClienteCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest(ApiResponse<string>.Fail("O ID informado na URL não corresponde ao do cliente."));
 
-        [HttpGet]
-        public async Task<IActionResult> ListarClientes([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            var query = new GetClientesQuery(page, pageSize);
-            var clientes = await _mediator.Send(query);
-            return Ok(clientes);
-        }
+        await _mediator.Send(command);
+        return Ok(ApiResponse<string>.Ok("Cliente atualizado com sucesso."));
+    }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> AtualizarCliente(Guid id, [FromBody] UpdateClienteCommand command)
-        {
-            if (id != command.Id)
-                return BadRequest("O ID informado na URL não corresponde ao do cliente.");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _mediator.Send(command);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoverCliente(Guid id)
-        {
-            var command = new DeleteClienteCommand(id);
-            await _mediator.Send(command);
-            return NoContent();
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> RemoverCliente(Guid id)
+    {
+        await _mediator.Send(new DeleteClienteCommand(id));
+        return Ok(ApiResponse<string>.Ok("Cliente removido com sucesso."));
     }
 }
