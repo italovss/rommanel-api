@@ -1,29 +1,26 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: src/WebAPI/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
   database:
-    image: postgres
-    container_name: rommanel-db
+    image: postgres:15
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: rommanel
+      POSTGRES_USER: rommanel
+      POSTGRES_PASSWORD: rommanel
+      POSTGRES_DB: rommaneldb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  api:
-    build: 
-      context: .
-      dockerfile: src/WebAPI/Dockerfile
-    container_name: rommanel-api
-    restart: always
-    depends_on:
-      - database
-    environment:
-      ConnectionStrings__DefaultConnection: "Host=database;Port=5432;Database=rommanel;Username=admin;Password=admin"
-    ports:
-      - "5000:5000"
 
 volumes:
   postgres_data:

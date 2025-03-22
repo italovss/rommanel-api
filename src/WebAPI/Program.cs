@@ -10,6 +10,16 @@ using Rommanel.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddMediatR(typeof(AssemblyMarker));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -23,7 +33,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<ClienteValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateClienteCommandValidator>();
 
 var app = builder.Build();
 
@@ -33,6 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

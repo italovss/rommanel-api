@@ -1,29 +1,29 @@
 ﻿using FluentValidation;
-using Rommanel.Domain.Entities;
+using Rommanel.Application.Commands;
 
 namespace Rommanel.Application.Validators
 {
-    public class ClienteValidator : AbstractValidator<Cliente>
+    public class CreateClienteCommandValidator : AbstractValidator<CreateClienteCommand>
     {
-        public ClienteValidator()
+        public CreateClienteCommandValidator()
         {
             RuleFor(c => c.Nome)
-                .NotEmpty().WithMessage("Nome é obrigatório");
+                .NotEmpty().WithMessage("O nome é obrigatório");
 
             RuleFor(c => c.CPF_CNPJ)
-                .NotEmpty().WithMessage("CPF/CNPJ é obrigatório")
+                .NotEmpty().WithMessage("O CPF/CNPJ é obrigatório")
                 .Matches(@"^\d{11}|\d{14}$").WithMessage("CPF/CNPJ inválido");
 
             RuleFor(c => c.Email)
-                .NotEmpty().WithMessage("Email é obrigatório")
+                .NotEmpty().WithMessage("O e-mail é obrigatório")
                 .EmailAddress().WithMessage("Email inválido");
 
             RuleFor(c => c.Telefone)
-                .NotEmpty().WithMessage("Telefone é obrigatório");
+                .NotEmpty().WithMessage("O telefone é obrigatório");
 
             RuleFor(c => c.DataNascimento)
                 .Must(data => data <= DateTime.Today.AddYears(-18))
-                .WithMessage("Cliente deve ter no mínimo 18 anos");
+                .WithMessage("O cliente deve ter no mínimo 18 anos");
 
             RuleFor(c => c.Endereco).SetValidator(new EnderecoValidator());
         }

@@ -11,13 +11,21 @@ namespace Rommanel.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Cliente>()
-                .HasIndex(c => c.CPF_CNPJ)
-                .IsUnique();
+            modelBuilder.Entity<Cliente>(cliente =>
+            {
+                cliente.HasIndex(c => c.CPF_CNPJ).IsUnique();
+                cliente.HasIndex(c => c.Email).IsUnique();
 
-            modelBuilder.Entity<Cliente>()
-                .HasIndex(c => c.Email)
-                .IsUnique();
+                cliente.OwnsOne(c => c.Endereco, endereco =>
+                {
+                    endereco.Property(e => e.CEP).HasColumnName("CEP").IsRequired();
+                    endereco.Property(e => e.Logradouro).HasColumnName("Logradouro").IsRequired();
+                    endereco.Property(e => e.Numero).HasColumnName("Numero").IsRequired();
+                    endereco.Property(e => e.Bairro).HasColumnName("Bairro").IsRequired();
+                    endereco.Property(e => e.Cidade).HasColumnName("Cidade").IsRequired();
+                    endereco.Property(e => e.Estado).HasColumnName("Estado").IsRequired();
+                });
+            });
         }
     }
 }

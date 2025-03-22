@@ -9,6 +9,8 @@
         public string Cidade { get; set; }
         public string Estado { get; set; }
 
+        public Endereco() {}
+
         public Endereco(string cep, string logradouro, string numero, string bairro, string cidade, string estado)
         {
             CEP = cep;

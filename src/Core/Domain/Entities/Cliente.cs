@@ -10,12 +10,14 @@
         public string Email { get; private set; }
         public Endereco Endereco { get; private set; }
 
+        private Cliente() { }
+
         public Cliente(string nome, string cpfCnpj, DateTime dataNascimento, string telefone, string email, Endereco endereco)
         {
             Id = Guid.NewGuid();
             Nome = nome;
             CPF_CNPJ = cpfCnpj;
-            DataNascimento = dataNascimento;
+            DataNascimento = DateTime.SpecifyKind(dataNascimento, DateTimeKind.Utc);
             Telefone = telefone;
             Email = email;
             Endereco = endereco;
